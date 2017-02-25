@@ -5,9 +5,9 @@ The most annoying part in creating a web application is to actually create the f
 
 ###Quick Start
 Go to [draw.io](https://www.draw.io) create a new file and use the UML objects in order to create your components tree. Be awere, use only the labeled as **object** (the fist one).
-![alt text](/Users/VaeVictis/PycharmProjects/drawIoToVuejs/images/object.png)
+![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/master/images/object.png?raw=true)
 You can use arrows to link components, the relation parent-children is express by having an arrow from the **childre** to the **parent**
-![alt text](/Users/VaeVictis/PycharmProjects/drawIoToVuejs/images/app_drawio.png)
+![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/master/images/app_drawio.png?raw=true)
 
 Once you have finished your application you must export it as XML **not compressed**
 
