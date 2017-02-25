@@ -75,7 +75,8 @@ def parse(xmlFileName):
             if cell.get('@edge'):
                 source = cache[cell.get('@source')]
                 target = cache[cell.get("@target")]
-                target.components.append(source)
+                if source not in target.components:
+                    target.components.append(source)
         del cache
         return graph
 
@@ -83,6 +84,7 @@ def parse(xmlFileName):
 def main():
     xmlFileName = sys.argv[1]
     destinationPath = sys.argv[2]
+
     try:
         graph = parse(xmlFileName)
         graph[0].componentsBasePath = "/components"
