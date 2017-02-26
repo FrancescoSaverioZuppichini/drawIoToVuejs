@@ -54,10 +54,10 @@ class VueNode(Node):
         for component in self.components:
             component.create()
 
+
 def findFileFromNode(start,path,toFind):
     Q = []
     return findFileFromNodeInner(start,path,toFind,False,Q)
-
 
 def findFileFromNodeInner(start,path,toFind,wentDown,Q):
     # check if visited
@@ -122,36 +122,41 @@ def parse(xmlFileName):
 
         for cell in (doc['mxGraphModel']['root']['mxCell']):
             if cell.get('@edge'):
-                source = cache[cell.get('@source')]
-                target = cache[cell.get('@target')]
-                if (cell.get('@value') == "Use"):
-                    if target not in source.dependencies:
-                        source.dependencies.append(target)
-                else:
-                    if source not in target.components:
-                        target.components.append(source)
-                        source.parent = target
+                # try to get the Node from the edge
+                try:
+                    source = cache[cell.get('@source')]
+                    target = cache[cell.get('@target')]
+                    if (cell.get('@value') == "Use"):
+                        if target not in source.dependencies:
+                            source.dependencies.append(target)
+                    else:
+                        if source not in target.components:
+                            target.components.append(source)
+                            source.parent = target
+                except:
+                    # sometimes there is some problem with the UML,
+                    # we just don't care
+                    pass
 
         del cache
         return graph
 
 
 def main():
-    # xmlFileName = sys.argv[1]
-    # destinationPath = sys.argv[2]
+    xmlFileName = sys.argv[1]
+    destinationPath = sys.argv[2]
 
-    xmlFileName = "e.xml"
-    destinationPath = "./"
-    # try:
-    graph = parse(xmlFileName)
-    graph[0].componentsBasePath = "components"
-    createAll(graph[0],destinationPath)
-    # graph[0].create(destinationPath)
-    print('done.')
+    # xmlFileName = "f.xml"
+    # destinationPath = "./"
+    try:
+        graph = parse(xmlFileName)
+        graph[0].componentsBasePath = "components"
+        createAll(graph[0],destinationPath)
+        print('done.')
 
-    # except Exception as e:
-    #     print(e)
-    #     usage()
+    except Exception as e:
+        print(e)
+        usage()
 
 
 main()
