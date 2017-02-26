@@ -27,12 +27,11 @@ class VueNode(Node):
         componentsString = ""
         componentEl = ""
         for component in self.dependencies:
-            importPath = os.path.normpath(self.componentsBasePath + "/" + component.value)
-            print(self)
-            print(findFileFromNode(self,"",component,False))
+            # importPath = os.path.normpath(self.componentsBasePath + "/" + component.value)
+            importPath = os.path.normpath(findFileFromNode(self,"",component))
             # print(component.basePath)
-            importString += "import %s from '%s'\n" % (
-                component, findFile(component.value))
+            importString += "import %s from '%s/%s.vue'\n" % (
+                component, importPath,component.value)
             componentsString += "%s," % (component)
             # print(componentsString)
         template = "<template><div id='%s'>%s</div></template>\n<script> %s export default { name: '%s', components: { %s }, } </script>\n<style></style>" % (
@@ -55,19 +54,35 @@ class VueNode(Node):
         for component in self.components:
             component.create()
 
+def findFileFromNode(start,path,toFind):
+    Q = []
+    return findFileFromNodeInner(start,path,toFind,False,Q)
 
-def findFileFromNode(start,path,toFind,wentDown):
+
+def findFileFromNodeInner(start,path,toFind,wentDown,Q):
+    # check if visited
+    if start in Q:
+        return False
+    # check is we reach the top
     if not start:
-        return None
+        return False
     if start.id == toFind.id:
-        print(path)
-        # return path
-    if not searchInChildren(start,path,toFind):
-        return findFileFromNode(start.parent, "../" + path, toFind, False)
+        return path
+    # append current node to visited
+    Q.append(start)
+    # get the foundedPath by searching in the children, it can also be False
+    foundedPath = searchInChildren(start,path,toFind,Q)
+    if not foundedPath:
+        # go one level up and search into the parent
+        return findFileFromNodeInner(start.parent, "../" + path, toFind, False,Q)
+    return foundedPath
 
-def searchInChildren(start,path,toFind):
+def searchInChildren(start,path,toFind,Q):
     for component in start.components:
-          findFileFromNode(component, path + '/' + component.value, toFind,True)
+        realPath = findFileFromNodeInner(component, path + '/' + component.value, toFind,True,Q)
+        if realPath != False:
+              return realPath
+    return False
 
 def findFile(name):
     for r, d, f in os.walk("./"):
@@ -125,7 +140,7 @@ def main():
     # xmlFileName = sys.argv[1]
     # destinationPath = sys.argv[2]
 
-    xmlFileName = "d.xml"
+    xmlFileName = "e.xml"
     destinationPath = "./"
     # try:
     graph = parse(xmlFileName)
