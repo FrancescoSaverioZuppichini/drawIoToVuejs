@@ -12,7 +12,7 @@ class Node:
         self.parent = None
         self.dependencies = []
         self.basePath = ""
-        self.componentsBasePath = ""
+        self.componentsBasePath = "./"
 
     def __str__(self):
         return self.value
@@ -26,16 +26,17 @@ class VueNode(Node):
         importString = ""
         componentsString = ""
         componentEl = ""
+
         for component in self.dependencies:
             # importPath = os.path.normpath(self.componentsBasePath + "/" + component.value)
-            importPath = os.path.normpath(findFileFromNode(self,"",component))
+            importPath = self.componentsBasePath+ os.path.normpath(findFileFromNode(self,"",component))
             # print(component.basePath)
             importString += "import %s from '%s/%s.vue'\n" % (
                 component, importPath,component.value)
             componentsString += "%s," % (component)
+            componentEl += "<%s/>"%(component.value.lower())
             # print(componentsString)
-        template = "<template><div id='%s'>%s</div></template>\n<script> %s export default { name: '%s', components: { %s }, } </script>\n<style></style>" % (
-            self.value, componentEl, importString, self.value, componentsString)
+        template = "<template><div>%s%s</div></template>\n<script> %s export default { name: '%s', components: { %s }, } </script>\n<style></style>" % (self.value,componentEl, importString, self.value, componentsString)
         return template
 
     def create(self):
@@ -71,24 +72,20 @@ def findFileFromNodeInner(start,path,toFind,wentDown,Q):
     # append current node to visited
     Q.append(start)
     # get the foundedPath by searching in the children, it can also be False
-    foundedPath = searchInChildren(start,path,toFind,Q)
-    if not foundedPath:
-        # go one level up and search into the parent
-        return findFileFromNodeInner(start.parent, "../" + path, toFind, False,Q)
-    return foundedPath
+    # foundedPath = searchInChildren(start,path,toFind,Q)
+    # if not foundedPath:
+    #     # go one level up and search into the parent
+    #     return findFileFromNodeInner(start.parent, "../" + path, toFind, False,Q)
+    return searchInChildren(start,path,toFind,Q) or searchInParent(start,path,toFind,Q)
 
+def searchInParent(start,path,toFind,Q):
+    return findFileFromNodeInner(start.parent, "../" + path, toFind, False,Q)
 def searchInChildren(start,path,toFind,Q):
     for component in start.components:
         realPath = findFileFromNodeInner(component, path + '/' + component.value, toFind,True,Q)
         if realPath != False:
               return realPath
     return False
-
-def findFile(name):
-    for r, d, f in os.walk("./"):
-        for files in f:
-            if files == name + '.vue':
-                return os.path.join(r, files)
 
 def createAllPathes(root,basePath):
     root.basePath = basePath
@@ -150,7 +147,7 @@ def main():
     # destinationPath = "./"
     try:
         graph = parse(xmlFileName)
-        graph[0].componentsBasePath = "components"
+        graph[0].componentsBasePath = "./components"
         createAll(graph[0],destinationPath)
         print('done.')
 
