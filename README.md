@@ -10,6 +10,8 @@ Go to [draw.io](https://www.draw.io) create a new file and use the UML objects i
 You can use arrows to link the components, the relation parent-children is express by having an arrow from the **children** to the **parent**
 ![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/master/images/app_drawio.png?raw=true)
 
+If you want to also inclued a file into your component you need to use the specific arrow **use**
+
 Once you have finished your application you must export it as XML **not compressed**
 
 Then, to create your components, open the terminal and type
