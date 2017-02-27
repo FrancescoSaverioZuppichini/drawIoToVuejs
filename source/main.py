@@ -140,11 +140,11 @@ def parse(xmlFileName):
 
 
 def main():
-    xmlFileName = sys.argv[1]
-    destinationPath = sys.argv[2]
+    # xmlFileName = sys.argv[1]
+    # destinationPath = sys.argv[2]
 
-    # xmlFileName = "f.xml"
-    # destinationPath = "./"
+    xmlFileName = "f.xml"
+    destinationPath = "./"
     try:
         graph = parse(xmlFileName)
         graph[0].componentsBasePath = "./components"
