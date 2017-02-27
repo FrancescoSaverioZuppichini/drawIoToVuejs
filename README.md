@@ -8,9 +8,12 @@ Go to [draw.io](https://www.draw.io) create a new file and use the UML objects i
 ![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/master/images/object.png?raw=true)
 
 You can use arrows to link the components, the relation parent-children is express by having an arrow from the **children** to the **parent**
-![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/master/images/app_drawio.png?raw=true)
+![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/develop/images/app_drawio_2.png?raw=true)
 
 If you want to also inclued a file into your component you need to use the specific arrow **use**
+![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/develop/images/app_drawio_2.1.png?raw=True)
+
+That means that, for example, the file *Home.vue* will import file *User.vue*.
 
 Once you have finished your application you must export it as XML **not compressed**
 
@@ -26,28 +29,25 @@ After that, directories and components will be created. By following our example
 \\after creating all components
 .
 ├── App.vue
-└── components
-    ├── Home
-    │   ├── Home.vue
-    │   ├── Shop
-    │   │   └── Shop.vue
-    │   ├── ShoppingCart
-    │   │   └── ShoppingCart.vue
-    │   └── UserProfile
-    │       └── UserProfile.vue
-    └── Index
-        ├── FirstSection
-        │   └── FirstSection.vue
-        └── Index.vue
+├── components
+│   ├── Hello.vue
+│   ├── Home
+│   │   └── Home.vue
+│   └── Index
+│       ├── Index.vue
+│       └── User
+│           └── User.vue
 ```
 
 If we take a look at *Home.vue* for example we can see that all components are loaded correctly
 
 ```javascript
-import Shop from './Shop/Shop.vue'
-import UserProfile from './UserProfile/UserProfile.vue'
-import ShoppingCart from './ShoppingCart/ShoppingCart.vue'
+import User from './../Index/User/User.vue'
 ```
+
+By using Vue webtools:
+
+![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/develop/images/vueDevTool_app_drawio_2.1.png?raw=True)
 
 ###Pro Tip
 You can fast use the *vue-cli* in order to create an app and then use our program to ovveride *App.vue* and the components folder.
