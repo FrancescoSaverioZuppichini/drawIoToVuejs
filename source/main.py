@@ -120,7 +120,7 @@ def parse(xmlFileName):
             if cell.get('@edge'):
                 # try to get the Node from the edge
                 try:
-                    source = cache[cell.get('@sourcetemp')]
+                    source = cache[cell.get('@source')]
                     target = cache[cell.get('@target')]
                     if (cell.get('@value') == "Use"):
                         if target not in source.dependencies:
@@ -129,7 +129,7 @@ def parse(xmlFileName):
                         if source not in target.components:
                             target.components.append(source)
                             source.parent = target
-                except Exception:
+                except:
                     # sometimes there is some problem with the UML,
                     # we just don't care
                     pass
@@ -142,7 +142,7 @@ def main():
     # xmlFileName = sys.argv[1]
     # destinationPath = sys.argv[2]
 
-    xmlFileName = "../test/test.xml"
+    xmlFileName = "f.xml"
     destinationPath = "../dist"
     try:
         graph = parse(xmlFileName)
