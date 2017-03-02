@@ -36,8 +36,10 @@ class VueNode(Node):
             componentsString += "%s," % (component)
             componentEl += "<%s/>"%(component.value.lower())
             # print(componentsString)
-        template = "<template><div>%s%s</div></template>\n<script> %s export default { name: '%s', components: { %s }, } </script>\n<style></style>" % (self.value,componentEl, importString, self.value, componentsString)
-        return template
+        template = "<template><div>%s%s</div></template>\n<script> %sexport default { name: '%s', components: { %s }, } </script>\n<style></style>" % (self.value,componentEl, importString, self.value, componentsString)
+        soup = BeautifulSoup(template, 'html.parser')
+
+        return soup.prettify()
 
     def create(self):
         if not os.path.exists(self.basePath + '/' + self.componentsBasePath):
@@ -71,15 +73,12 @@ def findFileFromNodeInner(start,path,toFind,wentDown,Q):
         return path
     # append current node to visited
     Q.append(start)
-    # get the foundedPath by searching in the children, it can also be False
-    # foundedPath = searchInChildren(start,path,toFind,Q)
-    # if not foundedPath:
-    #     # go one level up and search into the parent
-    #     return findFileFromNodeInner(start.parent, "../" + path, toFind, False,Q)
+
     return searchInChildren(start,path,toFind,Q) or searchInParent(start,path,toFind,Q)
 
 def searchInParent(start,path,toFind,Q):
     return findFileFromNodeInner(start.parent, "../" + path, toFind, False,Q)
+
 def searchInChildren(start,path,toFind,Q):
     for component in start.components:
         realPath = findFileFromNodeInner(component, path + '/' + component.value, toFind,True,Q)
@@ -144,7 +143,7 @@ def main():
     # destinationPath = sys.argv[2]
 
     xmlFileName = "f.xml"
-    destinationPath = "./"
+    destinationPath = "../dist"
     try:
         graph = parse(xmlFileName)
         graph[0].componentsBasePath = "./components"
