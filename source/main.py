@@ -4,6 +4,7 @@ import os
 import sys
 
 
+
 class Node:
     def __init__(self, id, value):
         self.id = id
@@ -142,7 +143,7 @@ def main():
     # xmlFileName = sys.argv[1]
     # destinationPath = sys.argv[2]
 
-    xmlFileName = "../test/test.xml"
+    xmlFileName = "./test.xml"
     destinationPath = "../dist"
     try:
         graph = parse(xmlFileName)
