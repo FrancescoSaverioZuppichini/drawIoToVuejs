@@ -2,8 +2,7 @@ import xmltodict
 from bs4 import BeautifulSoup
 import os
 import sys
-
-
+import re
 
 class Node:
     def __init__(self, id, value):
@@ -35,9 +34,9 @@ class VueNode(Node):
             importString += "import %s from '%s/%s.vue'\n" % (
                 component, importPath,component.value)
             componentsString += "%s," % (component)
-            componentEl += "<%s/>"%(component.value.lower())
+            componentEl += "<%s/>"%("-".join(re.findall('[A-Z][a-z]*',component.value)))
             # print(componentsString)
-        template = "<template><div>%s%s</div></template>\n<script> %sexport default { name: '%s', components: { %s }, } </script>\n<style></style>" % (self.value,componentEl, importString, self.value, componentsString)
+        template = "<template><div>%s%s</div></template>\n<script>%sexport default { name: '%s', components: { %s }, }</script>\n<style></style>" % (self.value,componentEl, importString, self.value, componentsString)
         soup = BeautifulSoup(template, 'html.parser')
 
         return soup.prettify()
@@ -74,7 +73,8 @@ def findFileFromNodeInner(start,path,toFind,wentDown,Q):
         return path
     # append current node to visited
     Q.append(start)
-
+    if wentDown:
+        return searchInChildren(start, path, toFind, Q)
     return searchInChildren(start,path,toFind,Q) or searchInParent(start,path,toFind,Q)
 
 def searchInParent(start,path,toFind,Q):
@@ -90,8 +90,13 @@ def searchInChildren(start,path,toFind,Q):
 def createAllPathes(root,basePath):
     root.basePath = basePath
     for component in root.components:
-            newPath = os.path.join(basePath, root.componentsBasePath, component.value)
-            createAllPathes(component,newPath)
+            if component == root:
+                print("circular dependency detected. Removing %s from %s" %(component,root))
+                root.components.remove(component)
+                continue
+            else:
+                newPath = os.path.join(basePath, root.componentsBasePath, component.value)
+                createAllPathes(component,newPath)
 
 def createAll(root,destinationPath):
     createAllPathes(root,destinationPath)
@@ -113,6 +118,8 @@ def parse(xmlFileName):
                     id = cell.get("@id")
                     # remove html junk in the title
                     value = BeautifulSoup(cell.get("@value"), "lxml").text
+                    # make first letter uppercase
+                    value = value[0].upper() + value[1:]
                     node = VueNode(id, value)
                     cache[node.id] = node
                     graph.append(node)
@@ -140,11 +147,11 @@ def parse(xmlFileName):
 
 
 def main():
-    # xmlFileName = sys.argv[1]
-    # destinationPath = sys.argv[2]
-
-    xmlFileName = "./test.xml"
-    destinationPath = "../dist"
+    xmlFileName = sys.argv[1]
+    destinationPath = sys.argv[2]
+    # xmlFileName = "./test.xml"
+    #
+    # destinationPath = "../"
     try:
         graph = parse(xmlFileName)
         graph[0].componentsBasePath = "./components"
