@@ -1,6 +1,6 @@
 
-#Draw.io to Vuejs
-###A faster way to build web-app by using draw.io as uml to create vue single file components
+# Draw.io to Vuejs
+### A faster way to build web-app by using draw.io as uml to create vue single file components
 
 I have made a new version using node that is available here:
 https://github.com/FrancescoSaverioZuppichini/DrawIo2Vuejs
@@ -12,7 +12,7 @@ This python package will be no longer updated.
 
 The most annoying part in creating a web application is to actually create the files and import them in other components. We've solved the problem by using [draw.io](https://www.draw.io) as editor and a little python program to parse the generated UML file and create the file and directory structures.
 
-###Quick Start
+### Quick Start
 Go to [draw.io](https://www.draw.io) create a new file and use the UML objects in order to create your components tree. Be aware, use only the labelled as an **object** (the fist one).
 ![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/master/images/object.png?raw=true)
 
@@ -58,5 +58,5 @@ By using Vue webtools:
 
 ![alt text](https://github.com/FrancescoSaverioZuppichini/drawIoToVuejs/blob/develop/images/vueDevTool_app_drawio_2.1.png?raw=True)
 
-###Pro Tip
+### Pro Tip
 You can fast use the *vue-cli* in order to create an app and then use our program to ovveride *App.vue* and the components folder.
